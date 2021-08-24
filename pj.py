@@ -4,10 +4,10 @@ import fbchisellldbbase as fb
 
 def lldbcommands():
   return [ PrintDataAsJSONString() ]
-  
+
 class PrintDataAsJSONString(fb.FBCommand):
     def name(self):
-        return "pdj"
+        return "pj"
 
     def description(self):
         return "Print JSON representation of Swift Data"
@@ -35,13 +35,13 @@ class PrintDataAsJSONString(fb.FBCommand):
 
     def run(self, arguments, options):
         # Convert to NSObject first to allow for objc runtime to process it
-        objectToPrint = fb.evaluateInputExpression(
+        nsData = fb.evaluateInputExpression(
             "{obj} as NSObject".format(obj=arguments[0])
         )
 
         jsonString = fb.evaluateExpressionValue(
-            "(NSString*)[[NSString alloc] initWithData:(NSData*){} encoding:4]".format(
-               objectToPrint 
+            "(id)[[NSString alloc] initWithData:(NSData*){} encoding:4]".format(
+               nsData
             )
         ).GetObjectDescription()
 
